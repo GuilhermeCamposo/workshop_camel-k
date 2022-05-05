@@ -17,7 +17,7 @@
     solution_explorer_image: 'quay.io/gcamposo/tutorial-web-app:{{ solution_explorer_image_tag }}'
     solution_explorer_namespace: "workshop-solution-explorer"
     solution_explorer_walkthrough_locations:
-      - 'https://github.com/GuilhermeCamposo/camelk-workshop-doc'
+      - 'https://github.com/GuilhermeCamposo/workshop_camel-k'
   tasks:
 
     - name: Define domain
@@ -64,7 +64,6 @@
       when:
         - num_users|int > 0
         - not delete_workshop
-
 
     - name: Provision Camel K Operator
       with_sequence: start=1 end={{ num_users }}

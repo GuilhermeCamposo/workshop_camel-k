@@ -1,4 +1,4 @@
-= Red Hat Fuse Workshop Deployer
+= Camel K Workshop
 
 == Pre Requirements
 
