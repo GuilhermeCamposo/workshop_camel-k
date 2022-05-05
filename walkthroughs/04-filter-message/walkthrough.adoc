@@ -1,0 +1,37 @@
+:walkthrough: Filtering message content
+:codeready-url: {che-url}
+:openshift-url: {openshift-host}
+:user-password: openshift
+
+= Lab 4 - Filtering Message Content
+
+As developers/architecs we will usually find scenarios where we need to filter the content coming from a data source. Camel has the power to work with many data formats, but for this lab we're going to tackle one of the most common data format used in REST API's, JSON.
+
+To interact with our JSON content, were are going to use a very powerful expression language, https://goessner.net[JsonPath].
+
+[type=walkthroughResource,serviceName=codeready]
+.CodeReady Workspaces
+****
+* link:{codeready-url}[Console, window="_blank"]
+* link:https://developers.redhat.com/products/codeready-workspaces/overview/[Want to know more about CodeReady Workspaces?, window="_blank"]
+****
+
+[type=walkthroughResource,serviceName=openshift]
+.OpenShift Console
+****
+* link:{openshift-url}[Console, window="_blank"]
+****
+
+[time=4]
+== Use case
+
+
+
+
+
+
+
+[time=1]
+== Summary
+
+

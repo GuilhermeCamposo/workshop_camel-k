@@ -1,0 +1,50 @@
+= Red Hat Fuse Workshop Deployer
+
+== Pre Requirements
+
+=== Resource Consumption per User
+
+TBD
+
+Take the above resource consumption as a base to calculate the amount of resource you will need for your workshop.
+
+=== OpenShift 4.9
+
+This workshops requires a OpenShift environment with users already defined. They must be named as `user`+ `number`, like `user1`, and have the same password, `openshift`.
+Have as many as you need for your activity.
+
+
+[NOTE]
+====
+This workshop is specifically tested with OCP 4.9. Older versions have API incompatibilities that will break the automation.
+====
+
+=== CodeReady Workspaces
+
+You just need a updated browser, preferably Chrome or Firefox :)
+
+
+
+== Install The Workshop Using Ansible
+
+=== Parameters
+
+[options="header"]
+|=======================
+| Parameter | Example Value                                      | Definition
+| ocp_token | sha256~vFanQbthlPKfsaldJT3bdLXIyEkd7ypO_XPygY1DNtQ | access token for a user with cluster-admin previleges
+| domain    | my-cluster.company.com                             | Cluster domain. If you have a console url like this https://console-openshift-console.apps.my-cluster.company.com, your domain is my-cluster.company.com.
+| num_users | 8                                                  | Number of users expected in the workshop. Please, have in mind that the more users you have, more resources you are going to need from the cluster.
+| delete_workshop | false | Only use this parameter if you intend to delete the installation and preserve the cluster
+|=======================
+
+=== Running the playbook
+
+    token=REPLACE_ME
+    server=REPLACE_ME
+    num_users=REPLACE_ME
+    ansible-playbook -e token=${token} -e server=${server}  -e num_users=${num_users} playbook.yml
+
+=== Getting the user registration page
+
+The URL will be displayed by the `Installation Finished` task.
