@@ -23,10 +23,12 @@
   tasks:
 
     - name: Check Required Parameters
-      fail: msg="This play requires 'server' and 'token' to be defined"
+      fail: msg="This play requires 'server','token' and 'num_users' to be defined"
       when:
         - server is not defined
         - token is not defined
+        - num_users is not defined
+        - num_users | int > 0
 
     - name: Define domain
       set_fact:
@@ -47,7 +49,6 @@
 
     - name: Include Username Distribution
       when:
-        - num_users | int > 0
         - not delete_workshop
       include_role:
         name: username-distribution
@@ -62,20 +63,17 @@
         name: amq
       with_sequence: start=1 end={{ num_users }}
       when:
-        - num_users|int > 0
         - not delete_workshop
 
     - name: Provision Camel K Operator
       with_sequence: start=1 end={{ num_users }}
       when:
-        - num_users|int > 0
         - not delete_workshop
       include_role:
         name: camel-k
 
     - name: Installation Finished
       when:
-        - num_users|int > 0
         - not delete_workshop
       debug:
         msg: "Installation finished succesfully. User Distribution URL: https://{{ user_distribution_url }}. The password for every user is: {{ workshop_openshift_user_password }} "
