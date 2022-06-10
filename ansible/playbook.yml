@@ -52,27 +52,27 @@
       include_role:
         name: username-distribution
 
-    # - name: Provision CodeReady Workspaces
-    #   include_role:
-    #     name: codeready
-    #   when: not delete_workshop
-    #
-    # - name: Provision AMQ Broker Operator
-    #   include_role:
-    #     name: amq
-    #   with_sequence: start=1 end={{ num_users }}
-    #   when:
-    #     - num_users|int > 0
-    #     - not delete_workshop
-    #
-    # - name: Provision Camel K Operator
-    #   with_sequence: start=1 end={{ num_users }}
-    #   when:
-    #     - num_users|int > 0
-    #     - not delete_workshop
-    #   include_role:
-    #     name: camel-k
-    #
+    - name: Provision CodeReady Workspaces
+      include_role:
+        name: codeready
+      when: not delete_workshop
+
+    - name: Provision AMQ Broker Operator
+      include_role:
+        name: amq
+      with_sequence: start=1 end={{ num_users }}
+      when:
+        - num_users|int > 0
+        - not delete_workshop
+
+    - name: Provision Camel K Operator
+      with_sequence: start=1 end={{ num_users }}
+      when:
+        - num_users|int > 0
+        - not delete_workshop
+      include_role:
+        name: camel-k
+
     - name: Installation Finished
       when:
         - num_users|int > 0
