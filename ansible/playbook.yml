@@ -2,13 +2,15 @@
   name: Install Camel K Workshop
   vars:
     delete_workshop: false
-    insecure_skip_tls_verify: true
+    verify_tls: no
     ocp_username: opentlc-mgr
     debug_enable: false
+    insecure_skip_tls_verify: true
     # CHE configuration
     workshop_rhsso_admin_user_name: admin
     workshop_rhsso_admin_password: admin
     workshop_openshift_user_password: openshift
+    workshop_admin_password: admin_openshift
     workshop_che_user_password: openshift
     workshop_che_namespace: workshop-codeready
     # provision_webapp
@@ -19,6 +21,12 @@
     solution_explorer_walkthrough_locations:
       - 'https://github.com/GuilhermeCamposo/workshop_camel-k'
   tasks:
+
+    - name: Check Required Parameters
+      fail: msg="This play requires 'server' and 'token' to be defined"
+      when:
+        - server is not defined
+        - token is not defined
 
     - name: Define domain
       set_fact:
@@ -31,14 +39,6 @@
     - name: Set console_url
       set_fact:
         console_url: "https://console-openshift-console.{{ route_subdomain }}"
-
-    - name: login as super user with token on OpenShift 4
-      command: "oc login --token='{{ token }}'  --server={{ server }} --insecure-skip-tls-verify={{ insecure_skip_tls_verify }}"
-      when:
-       - token is defined
-       - token is not none
-       - token|trim() != ""
-      ignore_errors: no
 
     - name: Include Solution Explorer Role
       include_role:

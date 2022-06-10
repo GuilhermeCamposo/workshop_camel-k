@@ -1,42 +1,27 @@
 - name: Evaluate {{ solution_explorer_namespace }} project
   when: num_users | int > 0
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     api_version: v1
     kind: Namespace
     name: '{{ solution_explorer_namespace }}'
 
-- name: search for username distribution tool
-  k8s_info:
-    kind: DeploymentConfig
-    name: get-a-username
+- name: Evaluate Redis
+  k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
+    state: present
     namespace: '{{ solution_explorer_namespace }}'
-  register: r_gau_dc
-
-- name: search for Redis
-  k8s_info:
-    kind: DeploymentConfig
-    name: redis
-    namespace: '{{ solution_explorer_namespace }}'
-  register: r_redis_dc
-
-- name: Deploy Redis
-  when:
-    - r_gau_dc.resources | list | length == 0
-    - r_redis_dc.resources | list | length == 0
-  shell: >
-    oc process -f -
-    -p DATABASE_SERVICE_NAME=redis
-    -p REDIS_PASSWORD=redis
-    -p VOLUME_CAPACITY=1Gi
-    -p MEMORY_LIMIT=1Gi
-    -p REDIS_VERSION=5
-    | oc create -n {{ solution_explorer_namespace }}  -f -
-  args:
-    stdin: "{{ lookup('file', 'redis-template.yaml') }}"
+    resource_definition: "{{ lookup('file', 'redis-list.yaml') }}"
 
 - name: Wait for redis to be ready
-  when: r_gau_dc.resources | list | length == 0
   k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     api_version: v1
     kind: Pod
     namespace: '{{ solution_explorer_namespace }}'
@@ -50,50 +35,20 @@
   delay: 10
   until: r_redis_pod.resources | list | length == 1
 
-- name: Deploy username distribution tool
-  when: r_gau_dc.resources | list | length == 0
-  shell: >
-    oc -n {{ solution_explorer_namespace }} new-app --as-deployment-config quay.io/openshiftlabs/username-distribution:1.4 --name=get-a-username
-    -e LAB_REDIS_HOST=redis
-    -e LAB_REDIS_PASS=redis
-    -e LAB_TITLE={{ 'Fuse Workshop' | quote }}
-    -e LAB_DURATION_HOURS=1week
-    -e LAB_USER_COUNT={{ num_users }}
-    -e LAB_USER_ACCESS_TOKEN={{ workshop_openshift_user_password }}
-    -e LAB_USER_PASS={{ workshop_openshift_user_password }}
-    -e LAB_USER_PREFIX=user
-    -e LAB_USER_PAD_ZERO=false
-    -e LAB_ADMIN_PASS={{ workshop_openshift_user_password }}
-    -e LAB_MODULE_URLS='https://{{ webapp_secure_route }};Solution Explorer'
-    -e LAB_EXTRA_URLS='{{console_url}};OpenShift Console,https://codeready-{{ workshop_che_namespace }}.{{ route_subdomain}};CodeReady Workspaces Console'
-
-- name: expose username distribution tool
-  when: r_gau_dc.resources | list | length == 0
+- name: Evaluate username-distribution
   k8s:
-    api_version: route.openshift.io/v1
-    namespace: '{{ solution_explorer_namespace }}'
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
-    kind: Route
-    definition:
-      metadata:
-        name: get-a-username
-        labels:
-          app: get-a-username
-      spec:
-        host: ''
-        to:
-          kind: Service
-          name: get-a-username
-          weight: 100
-        port:
-          targetPort: 8080-tcp
-        tls:
-          termination: edge
-          insecureEdgeTerminationPolicy: Allow
-  register: Route
+    namespace: '{{ solution_explorer_namespace }}'
+    resource_definition: "{{ lookup('template', 'username-distribution-list.yaml.j2') }}"
 
 - name: Get User Distribution Route
   k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     kind: Route
     name: get-a-username
     namespace: '{{ solution_explorer_namespace }}'

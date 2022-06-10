@@ -4,10 +4,16 @@
 
 - name: Evaluate AMQ Broker Operator Group
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     resource_definition: "{{ lookup('template', 'operator-group.yml.j2') }}"
 
 - name: Evaluate AMQ Broker Subscription
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     resource_definition: "{{ lookup('template', 'amq_subscription.yml.j2') }}"
