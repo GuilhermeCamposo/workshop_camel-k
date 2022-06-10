@@ -66,5 +66,8 @@
 
 - name: Create OpenShift OAuth client
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     resource_definition: "{{ lookup('template', 'oauth-client.yml.j2') }}"

@@ -1,5 +1,5 @@
 # Install CRW via operator
-- name: create codeready namespace
+- name: Evaluate Codeready Namespace
   k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
