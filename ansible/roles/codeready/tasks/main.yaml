@@ -1,6 +1,9 @@
 # Install CRW via operator
 - name: create codeready namespace
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     kind: Project
     api_version: project.openshift.io/v1
@@ -14,12 +17,18 @@
 # deploy codeready operator
 - name: Evaluate OperatorGroup
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     namespace: '{{ workshop_che_namespace }}'
     resource_definition: "{{ lookup('template', 'codeready_operatorgroup.yaml.j2') }}"
 
 - name: Evaluate Subscription
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     namespace: '{{ workshop_che_namespace }}'
     resource_definition: "{{ lookup('file', 'codeready_subscription.yaml') }}"
@@ -27,6 +36,9 @@
 # wait for CRD to be a thing
 - name: Wait for CodeReady CRD to be ready
   k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     api_version: apiextensions.k8s.io/v1
     kind: CustomResourceDefinition
     name: checlusters.org.eclipse.che
@@ -38,6 +50,9 @@
 # deploy codeready CR
 - name: Create CR for CodeReady
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     namespace: '{{ workshop_che_namespace }}'
     merge_type:
@@ -45,6 +60,7 @@
     - merge
     resource_definition: "{{ lookup('file', 'codeready_cr.yaml') }}"
 
+#TODO ad-hoc command here. should add validation first
 # wait for che to be up
 - name: wait for CRW to be running
   uri:
@@ -57,6 +73,9 @@
 
 - name: Get codeready keycloak deployment
   k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     kind: Deployment
     namespace: '{{ workshop_che_namespace }}'
     name: keycloak
@@ -124,6 +143,9 @@
 
 - name: Import stack imagestream
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     merge_type:
     - strategic-merge
@@ -134,6 +156,9 @@
 
 - name: wait for stack to be a thing
   k8s_info:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     kind: ImageStream
     name: quarkus-stack
     namespace: openshift
@@ -141,9 +166,6 @@
   retries: 200
   delay: 10
   until: r_stack_is.resources | list | length == 1
-
-- name: import stack image
-  shell: oc import-image --all quarkus-stack -n openshift
 
 - name: Create and pre-warm user workspaces
   include_tasks: create_workspace.yml

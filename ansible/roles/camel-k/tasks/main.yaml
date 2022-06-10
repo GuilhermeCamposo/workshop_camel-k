@@ -4,5 +4,8 @@
 
 - name: Evaluate Camel K Subscription
   k8s:
+    api_key: '{{ token }}'
+    host: '{{ server }}'
+    validate_certs: '{{ verify_tls }}'
     state: present
     resource_definition: "{{ lookup('template', 'camelk_subscription.yml.j2') }}"
