@@ -173,4 +173,4 @@
     user: "{{ item }}"
   with_list: "{{ users }}"
   when:
-    - num_users|int > 0
+    - participants|int > 0
