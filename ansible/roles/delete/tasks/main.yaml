@@ -34,9 +34,9 @@
 
 
 - name: Delete Users projects
-  with_sequence: start=1 end={{ num_users }}
+  with_sequence: start=1 end={{ participants }}
   when:
-    - num_users|int > 0
+    - participants|int > 0
   k8s:
     api_key: '{{ token }}'
     host: '{{ server }}'
