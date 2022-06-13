@@ -64,14 +64,14 @@ ansible-playbook -e token=${token} -e server=${server}  -e participants=${partic
 
 The URL will be displayed by the `Installation Finished` task. Attendees will interact with the following page to start:
 
-image::.doc/img/user-distribution-console.png[User Distribution]
+image::doc/img/user-distribution-console.png[User Distribution]
 
 
 == User Registration Admin page
 
 The URL will be displayed by the `Installation Finished` task. Use this page to verify who got an user.
 
-image::.doc/img/admin-page.png[User Distribution]
+image::doc/img/admin-page.png[User Distribution]
 
 
 == Deleting the workshop:
