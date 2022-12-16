@@ -180,10 +180,10 @@ Now we can use the kamel CLI to run the integration:
 
 [source, bash]
 ----
-kamel run API.java --open-api openapi.yml --property-file db.properties
+kamel run API.java --open-api openapi.yml --property file:db.properties
 ----
 
-We used `--open-api` to create a route using an OpenAPI definition, and differently from the previous lab, we asked the operator to pack the `db.properties` as the application  `application.properties` using `--property-file`.
+We used `--open-api` to create a route using an OpenAPI definition, and differently from the previous lab, we asked the operator to pack the `db.properties` as the application  `application.properties` using `--property file:`.
 The idea was to show there was another possibility to inject configuration into the integration.
 
 Wait for the integration to be ready. You can check that using:
